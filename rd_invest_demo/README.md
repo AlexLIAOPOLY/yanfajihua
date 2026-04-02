@@ -40,14 +40,15 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 3210
 
 ## Render 部署（Blueprint）
 
-仓库根目录已提供 `render.yaml`，可直接在 Render 用 Blueprint 导入。
+仓库根目录已提供 `render.yaml`，Blueprint 会自动把服务根目录指向 `rd_invest_demo/`。
 
 ### Render 页面怎么填写
 
 1. Render 首页点击 `New +` -> `Blueprint`
 2. 选择你的 GitHub 仓库
-3. Blueprint 文件路径：`render.yaml`（默认自动识别）
+3. Blueprint 文件路径：`render.yaml`（仓库根目录，默认自动识别）
 4. 确认服务参数
+   - Root Directory: `rd_invest_demo`
    - Runtime: `Python`
    - Build Command: `pip install -r requirements.txt`
    - Start Command: `bash run.sh`
@@ -62,6 +63,11 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 3210
 6. 点击 `Apply` / `Create` 部署
 
 部署完成后访问 Render 分配的域名即可。
+
+如果你不是用 Blueprint，而是手动创建 `Web Service`，也要确保二选一：
+
+- `Root Directory` 填 `rd_invest_demo`
+- 或者把命令改成 `pip install -r rd_invest_demo/requirements.txt` 和 `bash rd_invest_demo/run.sh`
 
 ## 生产环境建议
 

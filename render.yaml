@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: rd-invest-demo
+    runtime: python
+    rootDir: rd_invest_demo
+    plan: free
+    autoDeploy: true
+    buildCommand: pip install -r requirements.txt
+    startCommand: bash run.sh
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.10
+      - key: DEFAULT_LLM_PROVIDER
+        value: deepseek
+      - key: DEFAULT_DEEPSEEK_MODEL
+        value: deepseek-chat
+      - key: DEFAULT_OPENAI_MODEL
+        value: gpt-4o-mini
+      - key: DEFAULT_REPORT_MONTH
+        value: 2025-11
+      - key: DEFAULT_REPORT_YEAR
+        value: 2025
+      - key: DS_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
