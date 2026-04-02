@@ -121,29 +121,82 @@
           </div>
         </header>
 
-        <section id="section-overview-head" data-layout="block" class="panel module-head main-section">
-          <div class="module-head-row">
-            <div class="module-head-title">总览指标</div>
-            <div class="module-head-actions">
-              <button id="copilotBtn" class="ghost-btn">刷新洞察</button>
+        <section id="section-overview-head" data-layout="block" class="panel module-head hero-stage main-section">
+          <div class="hero-stage-grid"></div>
+          <div class="hero-stage-glow hero-stage-glow-a"></div>
+          <div class="hero-stage-glow hero-stage-glow-b"></div>
+          <div class="hero-stage-inner">
+            <div class="hero-copy">
+              <div class="hero-kicker">R&D COMMAND CENTER</div>
+              <h2 class="hero-title">研发投入作战大屏</h2>
+              <p class="hero-desc">
+                将预算完成、人工波动、合规拦截与 AI 决策建议汇聚到同一块战情屏，面向管理层直接输出本月最关键动作。
+              </p>
+
+              <div class="hero-pill-row">
+                <div class="hero-pill">
+                  <span>当前范围</span>
+                  <strong id="heroScopeLabel">公司整体</strong>
+                </div>
+                <div class="hero-pill">
+                  <span>统计月份</span>
+                  <strong id="heroMonthLabel">2025-11</strong>
+                </div>
+                <div class="hero-pill">
+                  <span>智能引擎</span>
+                  <strong id="heroProviderStatus">DeepSeek · 待连接</strong>
+                </div>
+              </div>
+
+              <div class="hero-actions">
+                <button id="refreshBtn" class="primary-btn">全量刷新</button>
+                <button id="copilotBtn" class="ghost-btn">刷新洞察</button>
+              </div>
+
+              <div class="hero-signal">
+                <span class="hero-signal-label">当前首要动作</span>
+                <strong id="heroActionSignal">等待策略引擎生成...</strong>
+              </div>
             </div>
-          </div>
-          <div class="ticker-bar">
-            <div class="ticker-item">
-              <span>公司支撑率</span>
-              <strong id="tickerSupport">实时计算中</strong>
-            </div>
-            <div class="ticker-item">
-              <span>本月预警</span>
-              <strong id="tickerAlerts">实时计算中</strong>
-            </div>
-            <div class="ticker-item">
-              <span>合规违规</span>
-              <strong id="tickerCompliance">实时计算中</strong>
-            </div>
-            <div class="ticker-item">
-              <span>人工异常</span>
-              <strong id="tickerAnomaly">实时计算中</strong>
+
+            <div class="hero-visual">
+              <div class="hero-radar">
+                <div class="hero-radar-ring hero-radar-ring-a"></div>
+                <div class="hero-radar-ring hero-radar-ring-b"></div>
+                <div class="hero-radar-ring hero-radar-ring-c"></div>
+                <div class="hero-radar-scan"></div>
+                <div class="hero-radar-core">
+                  <span>Risk Score</span>
+                  <strong id="heroRiskScore">--</strong>
+                  <em id="heroRiskLevel">LOW</em>
+                </div>
+                <div class="hero-radar-node hero-radar-node-a"></div>
+                <div class="hero-radar-node hero-radar-node-b"></div>
+                <div class="hero-radar-node hero-radar-node-c"></div>
+              </div>
+
+              <div class="hero-data-stack">
+                <article class="hero-metric-card">
+                  <span>目标支撑率</span>
+                  <strong id="tickerSupport">实时计算中</strong>
+                  <small id="heroGapAmount">缺口待计算</small>
+                </article>
+                <article class="hero-metric-card">
+                  <span>本月预警</span>
+                  <strong id="tickerAlerts">实时计算中</strong>
+                  <small id="heroForecastLead">下一期预测待计算</small>
+                </article>
+                <article class="hero-metric-card">
+                  <span>合规违规</span>
+                  <strong id="tickerCompliance">实时计算中</strong>
+                  <small id="heroCompletedAmount">完成值待计算</small>
+                </article>
+                <article class="hero-metric-card">
+                  <span>人工异常</span>
+                  <strong id="tickerAnomaly">实时计算中</strong>
+                  <small id="heroFocusMetric">信号聚合中</small>
+                </article>
+              </div>
             </div>
           </div>
         </section>
@@ -306,6 +359,7 @@
         <section id="section-overview" data-layout="block" class="panel insight-panel main-section">
           <div class="panel-head">
             <h2>经营洞察摘要</h2>
+            <div class="panel-head-sub">策略引擎会把风险、机会与动作压缩成适合管理层阅读的信号面板。</div>
           </div>
           <div class="insight-grid">
             <article class="insight-card tone-positive">

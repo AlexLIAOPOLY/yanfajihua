@@ -56,6 +56,16 @@ const tickerSupportEl = document.getElementById("tickerSupport");
 const tickerAlertsEl = document.getElementById("tickerAlerts");
 const tickerComplianceEl = document.getElementById("tickerCompliance");
 const tickerAnomalyEl = document.getElementById("tickerAnomaly");
+const heroScopeLabelEl = document.getElementById("heroScopeLabel");
+const heroMonthLabelEl = document.getElementById("heroMonthLabel");
+const heroProviderStatusEl = document.getElementById("heroProviderStatus");
+const heroRiskScoreEl = document.getElementById("heroRiskScore");
+const heroRiskLevelEl = document.getElementById("heroRiskLevel");
+const heroGapAmountEl = document.getElementById("heroGapAmount");
+const heroForecastLeadEl = document.getElementById("heroForecastLead");
+const heroCompletedAmountEl = document.getElementById("heroCompletedAmount");
+const heroFocusMetricEl = document.getElementById("heroFocusMetric");
+const heroActionSignalEl = document.getElementById("heroActionSignal");
 const navLinks = Array.from(document.querySelectorAll(".nav-link[data-target]"));
 const mainSections = Array.from(document.querySelectorAll(".main-section[id]"));
 const dsKeyFabEl = document.getElementById("dsKeyFab");
@@ -128,6 +138,14 @@ function currentContext() {
     scope_type: scopeTypeEl.value,
     scope_key: scopeKeyEl.value,
   };
+}
+
+function updateOverviewHeroContext() {
+  if (heroMonthLabelEl) heroMonthLabelEl.textContent = monthEl?.value || "--";
+  if (heroScopeLabelEl) {
+    const label = scopeKeyEl?.options?.[scopeKeyEl.selectedIndex]?.text || scopeKeyEl?.value || "公司整体";
+    heroScopeLabelEl.textContent = label;
+  }
 }
 
 function setPageStatus(text, busy = false) {
@@ -280,6 +298,11 @@ function refreshDsFabState() {
   if (trendHeadModelEl) {
     const label = PROVIDER_LABELS[cfg.provider] || cfg.provider;
     trendHeadModelEl.textContent = cfg.model ? `${label} · ${cfg.model}` : `${label} · 未设模型`;
+  }
+  if (heroProviderStatusEl) {
+    const label = PROVIDER_LABELS[cfg.provider] || cfg.provider;
+    const suffix = cfg.model ? cfg.model : cfg.hasServerKey || cfg.apiKey ? "在线" : "待连接";
+    heroProviderStatusEl.textContent = `${label} · ${suffix}`;
   }
 }
 
@@ -1153,6 +1176,7 @@ function renderScopeOptions() {
   if (financeHeadScopeEl) {
     financeHeadScopeEl.textContent = scopeKeyEl.options[scopeKeyEl.selectedIndex]?.text || "公司整体";
   }
+  updateOverviewHeroContext();
 }
 
 async function refreshDashboard() {
@@ -1168,10 +1192,20 @@ async function refreshDashboard() {
     if (tickerSupportEl) {
       tickerSupportEl.textContent = formatPct(data.metrics.TOTAL.support_rate, "--");
     }
+    if (heroGapAmountEl) {
+      heroGapAmountEl.textContent = `缺口 ${formatMoney(data.metrics.TOTAL.gap_hkd, "--")}`;
+    }
+    if (heroCompletedAmountEl) {
+      heroCompletedAmountEl.textContent = `完成值 ${formatMoney(data.metrics.TOTAL.completed_hkd, "--")}`;
+    }
+    if (heroFocusMetricEl) {
+      heroFocusMetricEl.textContent = `${scopeTypeLabel(scopeType)}视角 · 目标 ${formatMoney(data.metrics.TOTAL.target_hkd, "--")}`;
+    }
     if (financeHeadScopeEl) {
       const label = scopeKeyEl.options[scopeKeyEl.selectedIndex]?.text || scopeKeyEl.value || "公司整体";
       financeHeadScopeEl.textContent = label;
     }
+    updateOverviewHeroContext();
   } finally {
     setLoading(["kpi-TOTAL", "kpi-OPEX", "kpi-CAPEX"], false);
   }
@@ -1189,6 +1223,12 @@ async function refreshForecast() {
     if (marketHeadNextEl) {
       const next = (data.forecast || [])[0];
       marketHeadNextEl.textContent = next ? formatMoney(next.predicted_hkd) : "样本不足";
+    }
+    if (heroForecastLeadEl) {
+      const next = (data.forecast || [])[0];
+      heroForecastLeadEl.textContent = next
+        ? `${next.month} 预测 ${formatMoney(next.predicted_hkd)}`
+        : "下一期预测样本不足";
     }
     const rows = [
       ...(data.history || []).map((x) => ({ ...x, predicted_hkd: "", kind: "历史" })),
@@ -1261,6 +1301,11 @@ async function refreshComplianceAndSuggestion() {
     );
     if (tickerComplianceEl) tickerComplianceEl.textContent = `${rows.length} 条`;
     if (monitorHeadComplianceEl) monitorHeadComplianceEl.textContent = `${rows.length} 条`;
+    if (heroFocusMetricEl) {
+      heroFocusMetricEl.textContent = rows.length
+        ? `合规拦截 ${rows.length} 条，建议优先清理高频规则`
+        : "合规链路稳定，当前未出现硬性拦截";
+    }
     renderTable(
       "complianceBox",
       rows,
@@ -1444,6 +1489,17 @@ async function runCopilot(silent = false) {
 
     const reasons = data.risk_reasons || [];
     const fc = data.forecast?.forecast || [];
+    if (heroRiskScoreEl) heroRiskScoreEl.textContent = Number(data.risk_score || 0).toFixed(0);
+    if (heroRiskLevelEl) {
+      const riskLevel = String(data.risk_level || "low");
+      heroRiskLevelEl.textContent = riskLevel.toUpperCase();
+      heroRiskLevelEl.dataset.level = riskLevel;
+    }
+    if (heroActionSignalEl) {
+      heroActionSignalEl.textContent = rows.length
+        ? rows[0].action
+        : "持续监控预算、工时、考勤的一致性，保持每月闭环。";
+    }
     if (insightStrengthEl) {
       insightStrengthEl.textContent =
         data.risk_level === "low"
@@ -1771,17 +1827,20 @@ loadDataBtn.addEventListener("click", async () => {
 
 scopeTypeEl.addEventListener("change", async () => {
   renderScopeOptions();
+  updateOverviewHeroContext();
   renderAiTodoBoard();
   renderAskQuickPrompts(fallbackQuickQuestions());
   await triggerRefresh();
 });
 
 monthEl.addEventListener("change", async () => {
+  updateOverviewHeroContext();
   renderAiTodoBoard();
   renderAskQuickPrompts(fallbackQuickQuestions());
   await triggerRefresh();
 });
 scopeKeyEl.addEventListener("change", async () => {
+  updateOverviewHeroContext();
   renderAiTodoBoard();
   renderAskQuickPrompts(fallbackQuickQuestions());
   await triggerRefresh();
