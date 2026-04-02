@@ -7,7 +7,7 @@ from pydantic import BaseModel, ValidationError
 from ..db import db_session
 from .compliance import compliance_checks, labor_growth_anomalies, mask_name
 from .forecast import forecast
-from .llm_client import LLMError, chat_json
+from .llm_client import LLMError, chat_json, provider_has_token
 from .metrics import (
     completed_amount,
     generate_progress_alerts,
@@ -221,7 +221,7 @@ def copilot_brief(
         "anomaly_count": anomaly_count,
         "forecast": future,
     }
-    if api_key:
+    if provider_has_token(provider, api_key):
         prompt = (
             "请基于以下真实研发投入数据生成管理动作建议。\n"
             f"范围: {output['scope_name']} ({scope_type}/{scope_key})\n"
@@ -501,7 +501,7 @@ def ask_data(
         "answer": base_answer,
         "context": context,
     }
-    if api_key:
+    if provider_has_token(provider, api_key):
         prompt = (
             "请基于真实数据上下文回答问题，回答要简洁并给出明确结论，不得编造。\n"
             f"问题: {safe_question}\n"

@@ -64,6 +64,11 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 3210
 
 部署完成后访问 Render 分配的域名即可。
 
+说明：
+
+- 服务首次启动时，如果数据库为空且仓库内样例 Excel 文件存在，会自动初始化演示数据。
+- 如需关闭自动初始化，可设置环境变量 `AUTO_LOAD_SOURCE_DATA=false`。
+
 如果你不是用 Blueprint，而是手动创建 `Web Service`，也要确保二选一：
 
 - `Root Directory` 填 `rd_invest_demo`

@@ -1847,7 +1847,7 @@ uploadForm("attendanceForm", "/api/upload/attendance", "考勤文件");
     await refreshAll();
     showToast({
       title: "页面就绪",
-      text: "可直接点击“初始化真实数据”开始正式使用。",
+      text: "页面已加载完成，样例数据会在首次启动时自动初始化。",
       type: "success",
       duration: 2400,
     });

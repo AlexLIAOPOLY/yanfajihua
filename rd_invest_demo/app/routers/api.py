@@ -25,6 +25,7 @@ from ..services.ai_features import (
     copilot_brief,
     scenario_simulation,
 )
+from ..services.bootstrap import source_file_status
 from ..services.data_loader import load_all_sources
 from ..services.forecast import dynamic_hour_suggestions, forecast
 from ..services.llm_client import LLMError, chat_summary, chat_summary_stream_events
@@ -123,7 +124,8 @@ def runtime_config() -> dict[str, Any]:
                 "deepseek": bool((os.getenv("DS_API_KEY") or "").strip()),
                 "openai": bool((os.getenv("OPENAI_API_KEY") or "").strip()),
             },
-        }
+        },
+        "sources": source_file_status(),
     }
 
 

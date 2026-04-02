@@ -35,6 +35,16 @@ PROVIDER_SPECS: dict[str, dict[str, Any]] = {
 }
 
 
+def provider_has_token(provider: str | None, api_key: str | None = None) -> bool:
+    try:
+        selected_provider = _normalize_provider(provider)
+    except LLMError:
+        return False
+    spec = PROVIDER_SPECS[selected_provider]
+    token = (api_key or os.getenv(spec["env_key"]) or "").strip()
+    return bool(token)
+
+
 def _build_session() -> requests.Session:
     session = requests.Session()
     retry = Retry(

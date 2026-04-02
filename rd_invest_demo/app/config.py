@@ -37,3 +37,10 @@ try:
     DEFAULT_REPORT_YEAR = int((os.getenv("DEFAULT_REPORT_YEAR") or "2025").strip())
 except ValueError:
     DEFAULT_REPORT_YEAR = 2025
+
+AUTO_LOAD_SOURCE_DATA = (os.getenv("AUTO_LOAD_SOURCE_DATA") or "true").strip().lower() not in {
+    "0",
+    "false",
+    "no",
+    "off",
+}
