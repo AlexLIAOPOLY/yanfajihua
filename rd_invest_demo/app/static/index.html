@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>研发投入治理平台</title>
+    <link rel="stylesheet" href="/static/css/styles.css" />
+  </head>
+  <body>
+    <div class="app-root">
+      <aside class="sidebar">
+        <div class="brand-block">
+          <div class="brand-mark">RD</div>
+          <div>
+            <div class="brand-title">研发投入治理</div>
+            <div class="brand-sub">决策执行平台 v2</div>
+          </div>
+        </div>
+
+        <div id="pageStatus" class="status-pill">数据状态：待初始化</div>
+
+        <nav class="sidebar-group">
+          <p class="group-title">总览与口径</p>
+          <a
+            class="side-link nav-link active"
+            href="#section-overview"
+            data-target="section-overview"
+            data-module="overview"
+            data-title="经营总览"
+            data-path="总览与口径 / 研发投入总览 / 公司视角"
+            data-sub="风险 / 动作 / 关键提醒"
+          >经营总览</a>
+          <a
+            class="side-link nav-link"
+            href="#section-finance"
+            data-target="section-finance"
+            data-module="finance"
+            data-title="财务口径（OPEX/CAPEX）"
+            data-path="总览与口径 / OPEX + CAPEX / KPI对齐"
+            data-sub="公司 / 部门 / 项目 目标与完成"
+          >财务口径（OPEX/CAPEX）</a>
+        </nav>
+
+        <nav class="sidebar-group">
+          <p class="group-title">业务流转</p>
+          <a
+            class="side-link nav-link"
+            href="#section-market"
+            data-target="section-market"
+            data-module="market"
+            data-title="项目执行与预警"
+            data-path="业务流转 / 执行进度 / 趋势预警"
+            data-sub="历史投入 / 趋势预测 / 项目提醒"
+          >项目执行与预警</a>
+          <a
+            class="side-link nav-link"
+            href="#section-monitor"
+            data-target="section-monitor"
+            data-module="monitor"
+            data-title="人工成本与合规"
+            data-path="业务流转 / 人工成本 / 合规校验"
+            data-sub="异常增长 / 考勤一致性 / 违规明细"
+          >人工成本与合规</a>
+          <a
+            class="side-link nav-link"
+            href="#section-risk"
+            data-target="section-risk"
+            data-module="risk"
+            data-title="审批流与风险研判"
+            data-path="业务流转 / 审批流转 / 风险建议"
+            data-sub="项目经理至财务全流程"
+          >审批流与风险研判</a>
+          <a
+            class="side-link nav-link"
+            href="#section-simulate"
+            data-target="section-simulate"
+            data-module="simulate"
+            data-title="工时规划与情景推演"
+            data-path="业务流转 / 工时规划 / 动态推演"
+            data-sub="新增工时/费用对目标支撑影响"
+          >工时规划与情景推演</a>
+        </nav>
+
+        <nav class="sidebar-group">
+          <p class="group-title">智能辅助</p>
+          <a
+            class="side-link nav-link"
+            href="#section-trend"
+            data-target="section-trend"
+            data-module="trend"
+            data-title="数据问答与分析"
+            data-path="智能辅助 / 数据问答 / LLM分析"
+            data-sub="追问建议 / 结果解释 / 决策辅助"
+          >数据问答与分析</a>
+        </nav>
+
+        <nav class="sidebar-group">
+          <p class="group-title">数据中台</p>
+          <a
+            class="side-link nav-link"
+            href="#section-ingest"
+            data-target="section-ingest"
+            data-module="ingest"
+            data-title="数据接入与入库"
+            data-path="数据中台 / ERP+考勤 / 导入日志"
+            data-sub="上传入库 / 溯源 / 刷新"
+          >数据接入与入库</a>
+        </nav>
+
+        <div class="sidebar-footer">
+          <button id="loadDataBtn" class="accent-btn">初始化真实数据</button>
+        </div>
+      </aside>
+
+      <main class="workspace">
+        <header class="panel workspace-head">
+          <div class="head-left">
+            <div id="workspacePath" class="workspace-path">总览与口径 / 研发投入总览 / 公司视角</div>
+            <div id="workspaceTitle" class="workspace-title">经营总览</div>
+            <div id="workspaceSub" class="workspace-sub">风险 / 动作 / 关键提醒</div>
+          </div>
+        </header>
+
+        <section id="section-overview-head" data-layout="block" class="panel module-head main-section">
+          <div class="module-head-row">
+            <div class="module-head-title">总览指标</div>
+            <div class="module-head-actions">
+              <button id="copilotBtn" class="ghost-btn">刷新洞察</button>
+            </div>
+          </div>
+          <div class="ticker-bar">
+            <div class="ticker-item">
+              <span>公司支撑率</span>
+              <strong id="tickerSupport">实时计算中</strong>
+            </div>
+            <div class="ticker-item">
+              <span>本月预警</span>
+              <strong id="tickerAlerts">实时计算中</strong>
+            </div>
+            <div class="ticker-item">
+              <span>合规违规</span>
+              <strong id="tickerCompliance">实时计算中</strong>
+            </div>
+            <div class="ticker-item">
+              <span>人工异常</span>
+              <strong id="tickerAnomaly">实时计算中</strong>
+            </div>
+          </div>
+        </section>
+
+        <section id="section-finance-head" data-layout="block" class="panel module-head main-section">
+          <div class="module-head-row">
+            <div class="module-head-title">财务分析</div>
+          </div>
+          <div class="controls">
+            <div class="control">
+              <label for="month">统计月份</label>
+              <select id="month">
+                <option value="2025-09">2025-09</option>
+                <option value="2025-10">2025-10</option>
+                <option value="2025-11" selected>2025-11</option>
+              </select>
+            </div>
+            <div class="control">
+              <label for="scopeType">维度</label>
+              <select id="scopeType">
+                <option value="company">公司整体</option>
+                <option value="department">部门维度（部门编码）</option>
+                <option value="project">项目维度（项目编码）</option>
+              </select>
+            </div>
+            <div class="control">
+              <label for="scopeKey">选择对象</label>
+              <select id="scopeKey"></select>
+            </div>
+            <div class="control module-mini-metric">
+              <label>当前范围</label>
+              <div id="financeHeadScope" class="module-mini-value">公司整体</div>
+            </div>
+          </div>
+        </section>
+
+        <section id="section-market-head" data-layout="block" class="panel module-head main-section">
+          <div class="module-head-row">
+            <div class="module-head-title">市场洞察</div>
+            <div class="module-head-actions">
+              <label for="forecastClass">分类</label>
+              <select id="forecastClass">
+                <option value="TOTAL">TOTAL</option>
+                <option value="OPEX">OPEX</option>
+                <option value="CAPEX">CAPEX</option>
+              </select>
+            </div>
+          </div>
+          <div class="ticker-bar">
+            <div class="ticker-item">
+              <span>下一期预测</span>
+              <strong id="marketHeadNext">待计算</strong>
+            </div>
+            <div class="ticker-item">
+              <span>预警总量</span>
+              <strong id="marketHeadAlerts">待计算</strong>
+            </div>
+          </div>
+        </section>
+
+        <section id="section-monitor-head" data-layout="block" class="panel module-head main-section">
+          <div class="module-head-row">
+            <div class="module-head-title">运营监控</div>
+          </div>
+          <div class="ticker-bar">
+            <div class="ticker-item">
+              <span>合规违规</span>
+              <strong id="monitorHeadCompliance">待计算</strong>
+            </div>
+            <div class="ticker-item">
+              <span>人工异常</span>
+              <strong id="monitorHeadAnomaly">待计算</strong>
+            </div>
+          </div>
+        </section>
+
+        <section id="section-risk-head" data-layout="block" class="panel module-head main-section">
+          <div class="module-head-row">
+            <div class="module-head-title">风险研判</div>
+            <div class="module-head-actions">
+              <label for="approvalStage">审批环节</label>
+              <select id="approvalStage">
+                <option value="manager">项目经理</option>
+                <option value="dept">部门经理</option>
+                <option value="rd">研发归口</option>
+                <option value="hr">人力复核</option>
+                <option value="finance">财务复核</option>
+              </select>
+            </div>
+          </div>
+          <div class="controls risk-controls">
+            <div class="control">
+              <label for="actorName">审批人姓名</label>
+              <input id="actorName" type="text" placeholder="审批人姓名" />
+            </div>
+            <div class="control">
+              <label for="aiApprovalStage">智能建议环节</label>
+              <select id="aiApprovalStage">
+                <option value="manager">项目经理</option>
+                <option value="dept">部门经理</option>
+                <option value="rd">研发归口</option>
+                <option value="hr">人力复核</option>
+                <option value="finance" selected>财务复核</option>
+              </select>
+            </div>
+            <button id="approvalAiBtn" class="primary-btn">生成审批建议</button>
+          </div>
+        </section>
+
+        <section id="section-simulate-head" data-layout="block" class="panel module-head main-section">
+          <div class="module-head-row">
+            <div class="module-head-title">场景模拟</div>
+          </div>
+          <div class="controls simulate-controls">
+            <div class="control">
+              <label for="simClass">分类</label>
+              <select id="simClass">
+                <option value="TOTAL">TOTAL</option>
+                <option value="OPEX">OPEX</option>
+                <option value="CAPEX">CAPEX</option>
+              </select>
+            </div>
+            <div class="control">
+              <label for="simOutsrc">新增委托(港币)</label>
+              <input id="simOutsrc" type="number" value="0" min="0" step="1000" />
+            </div>
+            <div class="control">
+              <label for="simHours">新增工时</label>
+              <input id="simHours" type="number" value="0" min="0" step="1" />
+            </div>
+            <div class="control">
+              <label for="simFactor">工时成本因子</label>
+              <input id="simFactor" type="number" value="1" min="0.1" step="0.1" />
+            </div>
+            <button id="simulateBtn" class="primary-btn">运行推演</button>
+          </div>
+        </section>
+
+        <section id="section-trend-head" data-layout="block" class="panel module-head main-section">
+          <div class="module-head-row">
+            <div class="module-head-title">行为趋势</div>
+            <div class="module-head-actions">
+              <span class="module-head-hint">在下方输入框中直接发送问题</span>
+            </div>
+          </div>
+          <div class="ticker-bar">
+            <div class="ticker-item">
+              <span>模型能力</span>
+              <strong id="trendHeadModel">DS 启用中</strong>
+            </div>
+          </div>
+        </section>
+
+        <section id="section-ingest-head" data-layout="block" class="panel module-head main-section">
+          <div class="module-head-row">
+            <div class="module-head-title">数据接入</div>
+          </div>
+        </section>
+
+        <section id="section-overview" data-layout="block" class="panel insight-panel main-section">
+          <div class="panel-head">
+            <h2>经营洞察摘要</h2>
+          </div>
+          <div class="insight-grid">
+            <article class="insight-card tone-positive">
+              <h3>优势</h3>
+              <p id="insightStrength">等待数据计算...</p>
+            </article>
+            <article class="insight-card tone-risk">
+              <h3>风险</h3>
+              <p id="insightRisk">等待数据计算...</p>
+            </article>
+            <article class="insight-card tone-chance">
+              <h3>机遇</h3>
+              <p id="insightChance">等待数据计算...</p>
+            </article>
+            <article class="insight-card tone-action">
+              <h3>行动</h3>
+              <p id="insightAction">等待数据计算...</p>
+            </article>
+          </div>
+          <div id="copilotMeta" class="mini-table"></div>
+          <div id="copilotActions" class="table-box"></div>
+          <div id="copilotLlm" class="llm-result llm-brief"></div>
+          <section class="ai-exec-board">
+            <div class="ai-exec-head">
+              <h3>AI 执行清单</h3>
+              <div class="ai-exec-actions">
+                <button id="seedAiTodoBtn" class="ghost-btn" type="button">从本次洞察生成</button>
+              </div>
+            </div>
+            <div id="aiTodoMeta" class="mini-table">暂无执行项</div>
+            <div id="aiTodoList" class="ai-todo-list"></div>
+          </section>
+        </section>
+
+        <section id="section-finance" data-layout="grid" class="kpi-wrap main-section">
+          <article class="panel kpi-card" data-kind="TOTAL">
+            <h2>OPEX + CAPEX</h2>
+            <div class="kpi-grid" id="kpi-TOTAL"></div>
+          </article>
+          <article class="panel kpi-card" data-kind="OPEX">
+            <h2>OPEX</h2>
+            <div class="kpi-grid" id="kpi-OPEX"></div>
+          </article>
+          <article class="panel kpi-card" data-kind="CAPEX">
+            <h2>CAPEX</h2>
+            <div class="kpi-grid" id="kpi-CAPEX"></div>
+          </article>
+        </section>
+
+        <section id="section-market" data-layout="grid" class="two-col main-section">
+          <article class="panel">
+            <h2>趋势预测</h2>
+            <div id="trendCanvas" class="trend-canvas"></div>
+            <div id="forecastTable" class="mini-table"></div>
+          </article>
+          <article class="panel">
+            <h2>项目进度提醒</h2>
+            <div id="alertBox" class="table-box"></div>
+          </article>
+        </section>
+
+        <section id="section-monitor" data-layout="grid" class="two-col main-section">
+          <article class="panel">
+            <h2>人工成本异常（环比 > 100%）</h2>
+            <div id="anomalyBox" class="table-box"></div>
+          </article>
+          <article class="panel">
+            <h2>合规校验结果</h2>
+            <div id="complianceBox" class="table-box"></div>
+          </article>
+        </section>
+
+        <section id="section-risk" data-layout="grid" class="two-col main-section">
+          <article class="panel">
+            <h2>人工成本审批流</h2>
+            <div id="pendingBox" class="table-box"></div>
+          </article>
+          <article class="panel">
+            <h2>审批风险建议</h2>
+            <div id="approvalAiBox" class="table-box"></div>
+          </article>
+        </section>
+
+        <section id="section-simulate" data-layout="grid" class="two-col main-section">
+          <article class="panel">
+            <h2>情景推演</h2>
+            <div id="simulateResult" class="table-box"></div>
+          </article>
+          <article class="panel">
+            <h2>项目动态工时建议</h2>
+            <div id="suggestionBox" class="table-box"></div>
+          </article>
+        </section>
+
+        <section id="section-trend" data-layout="grid" class="two-col main-section">
+          <article class="panel">
+            <h2>数据问答（基于当前真实数据）</h2>
+            <div class="llm-grid">
+              <textarea
+                id="askPrompt"
+                placeholder="例如：本月哪个维度缺口最大？哪些项目超预算最严重？"
+              ></textarea>
+              <div class="llm-actions">
+                <button id="askBtn" class="primary-btn">发送问答</button>
+                <button id="askSuggestBtn" class="ghost-btn" type="button">AI 推荐问题</button>
+              </div>
+              <div id="askQuickPrompts" class="ask-quick"></div>
+            </div>
+            <div id="askResult" class="llm-result"></div>
+          </article>
+          <article class="panel">
+            <h2>模型分析（可选）</h2>
+            <div class="llm-grid">
+              <textarea
+                id="llmPrompt"
+                placeholder="输入要分析的问题，例如：请给出公司/部门/项目层面的风险优先级与动作建议。"
+              ></textarea>
+              <div class="llm-actions">
+                <button id="llmBtn" class="primary-btn">发送分析</button>
+              </div>
+            </div>
+            <div id="llmResult" class="llm-result"></div>
+          </article>
+        </section>
+
+        <section id="section-ingest" data-layout="block" class="panel main-section">
+          <h2>外部数据接入</h2>
+          <div class="upload-grid">
+            <form id="erpForm" class="upload-card">
+              <h3>导入 ERP PO/PR</h3>
+              <p>字段要求：`project_code, month, doc_type, amount_hkd, currency`</p>
+              <input name="file" type="file" accept=".xlsx,.xls,.csv,.tsv" required />
+              <button type="submit" class="ghost-btn">上传并入库</button>
+            </form>
+            <form id="attendanceForm" class="upload-card">
+              <h3>导入考勤</h3>
+              <p>字段要求：`employee_name, work_date, total_hours, present`</p>
+              <input name="file" type="file" accept=".xlsx,.xls,.csv,.tsv" required />
+              <button type="submit" class="ghost-btn">上传并入库</button>
+            </form>
+          </div>
+          <div id="importLogBox" class="table-box"></div>
+        </section>
+      </main>
+    </div>
+
+    <button id="dsKeyFab" class="ds-fab" title="已启用默认 DS Key" aria-label="DS Key 状态按钮" type="button">
+      <span class="ds-fab-text">DS</span>
+      <span id="dsKeyDot" class="ds-dot"></span>
+    </button>
+
+    <div id="providerOverlay" class="provider-overlay" hidden></div>
+    <div id="providerModal" class="provider-modal" role="dialog" aria-modal="true" aria-labelledby="providerModalTitle" hidden>
+      <div class="provider-modal-head">
+        <h3 id="providerModalTitle">模型提供商配置</h3>
+        <button id="providerCloseBtn" class="icon-btn modal-close" type="button" aria-label="关闭">×</button>
+      </div>
+      <div class="provider-modal-body">
+        <label for="providerSelect">模型提供商</label>
+        <select id="providerSelect">
+          <option value="deepseek">DeepSeek</option>
+          <option value="openai">OpenAI</option>
+        </select>
+
+        <label for="providerModelInput">模型名称</label>
+        <input id="providerModelInput" type="text" placeholder="例如：deepseek-chat / gpt-4o-mini" />
+
+        <label for="providerApiKeyInput">API Key</label>
+        <input id="providerApiKeyInput" type="password" placeholder="输入该提供商的 API Key" />
+        <div id="providerHint" class="provider-hint">选择提供商后输入对应 API Key，点击保存即可生效。</div>
+      </div>
+      <div class="provider-modal-actions">
+        <button id="providerTestBtn" class="ghost-btn" type="button">测试连接</button>
+        <button id="providerSaveBtn" class="primary-btn" type="button">保存配置</button>
+      </div>
+    </div>
+
+    <div class="corner-actions" aria-label="页面快捷操作">
+      <button id="themeToggleBtn" class="icon-btn" data-icon-only="1" title="切换主题" aria-label="切换主题">
+        <span class="icon-symbol" aria-hidden="true">◐</span>
+      </button>
+      <button id="quickRefreshBtn" class="icon-btn" data-icon-only="1" title="一键刷新" aria-label="一键刷新">
+        <span class="icon-symbol" aria-hidden="true">↻</span>
+      </button>
+    </div>
+
+    <div id="toastHost" class="toast-host" aria-live="polite"></div>
+    <script src="/static/js/app.js"></script>
+  </body>
+</html>
